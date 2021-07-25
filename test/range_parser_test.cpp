@@ -10,7 +10,8 @@ TEST_P(InvalidRangeTest, Should_Throw_When_InvalidRangeProvided) {
 }
 
 INSTANTIATE_TEST_SUITE_P(InvalidRanges, InvalidRangeTest, testing::Values(
-        "", "bytes=0", "bytes=,", "bytes=--1", "bytes=-a", "bytes=a-", "bytes=10,9", "bytes=-1-2", "bytes=1--2"));
+        "", "bytes=0", "bytes=,", "bytes=--1", "bytes=-a", "bytes=a-", "bytes=10,9", "bytes=-1-2", "bytes=1--2",
+        "bytes=1.1-2", "bytes=1-2.1", "bytes=(1)-2"));
 
 class IgnoredRangeTest : public testing::TestWithParam<const char *> {
 };
@@ -52,3 +53,13 @@ INSTANTIATE_TEST_SUITE_P(ValidRanges, SingularRangeTest, testing::Values(
         SingularRangeParams("bytes=120-199", 200, 120, 80),
         SingularRangeParams("bytes=120-200", 200, 120, 80),
         SingularRangeParams("bytes=120-210", 200, 120, 80)));
+
+TEST(MultipleRangeTest, Should_ParseRanges_When_TwoValidRangesProvided) {
+    auto range = range_parser::parse("bytes=0-49,60-", 100);
+    EXPECT_EQ(range.unit, "bytes");
+    EXPECT_EQ(range.ranges.size(), 2);
+    EXPECT_EQ(range.ranges.at(0).start, 0);
+    EXPECT_EQ(range.ranges.at(0).length, 50);
+    EXPECT_EQ(range.ranges.at(1).start, 60);
+    EXPECT_EQ(range.ranges.at(1).length, 40);
+}
