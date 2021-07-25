@@ -61,3 +61,20 @@ TEST_P(EndOmittedRangeTest, Should_ParseRange_When_EndOmitted) {
 }
 
 INSTANTIATE_TEST_SUITE_P(Ranges, EndOmittedRangeTest, testing::Values(0, 40, 99));
+
+typedef std::tuple<std::string, std::int64_t, std::int64_t, std::int64_t> RangeT;
+
+class SimpleRangeTest : public testing::TestWithParam<RangeT> {
+};
+
+TEST_P(SimpleRangeTest, Should_ParseRange_When_SimpleRangeProvided) {
+    auto range = range_parser::parse(std::get<0>(GetParam()), std::get<1>(GetParam()));
+    EXPECT_EQ(range.unit, "bytes");
+    EXPECT_EQ(range.ranges.size(), 1);
+    EXPECT_EQ(range.ranges.at(0).start, std::get<2>(GetParam()));
+    EXPECT_EQ(range.ranges.at(0).length, std::get<3>(GetParam()));
+}
+
+INSTANTIATE_TEST_SUITE_P(Ranges, SimpleRangeTest, testing::Values(
+        RangeT("bytes=0-59", 200, 0, 60), RangeT("bytes=60-119", 200, 60, 60), RangeT("bytes=120-199", 200, 120, 80),
+        RangeT("bytes=120-200", 200, 120, 80), RangeT("bytes=120-210", 200, 120, 80)));

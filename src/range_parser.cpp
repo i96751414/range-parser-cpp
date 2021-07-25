@@ -62,7 +62,7 @@ namespace range_parser {
                     if (startOffset > endOffset) {
                         throw RangeException("Invalid range interval");
                     }
-                    httpRange.ranges.emplace_back(startOffset, std::min(pSize, endOffset - startOffset + 1));
+                    httpRange.ranges.emplace_back(startOffset, std::min(pSize, endOffset + 1) - startOffset);
                 }
             }
         }
