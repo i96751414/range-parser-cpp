@@ -1,0 +1,28 @@
+name: build
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - '*'
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    container:
+      image: docker://srzzumix/googletest:latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build
+        run: |
+          cmake -B cmake-build -DCMAKE_BUILD_TYPE=Debug -Dbuild_tests=ON
+          cmake --build cmake-build -- -j "$(nproc)"
+          cd cmake-build/test
+          ctest --stop-on-failure --output-on-failure
+      - name: Upload torrest artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: range-parser-linux-x64-debug
+          path: cmake-build/librange_parser.a

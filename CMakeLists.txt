@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.17)
+cmake_minimum_required(VERSION 3.16)
 project(range_parser
         DESCRIPTION "C++ small library for parsing HTTP range headers"
         HOMEPAGE_URL "https://github.com/i96751414/range-parser-cpp")

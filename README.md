@@ -1,5 +1,7 @@
 # range-parser-cpp
 
+[![Build Status](https://github.com/i96751414/range-parser-cpp/workflows/build/badge.svg)](https://github.com/i96751414/range-parser-cpp/actions?query=workflow%3Abuild)
+
 A small C++ library for parsing HTTP range headers as specified in [RFC 7233](https://www.rfc-editor.org/info/rfc7233).
 
 ## Example
