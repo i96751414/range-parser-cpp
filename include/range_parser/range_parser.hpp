@@ -8,6 +8,8 @@
 
 namespace range_parser {
 
+    constexpr const char *UNIT_BYTES = "bytes";
+
     class RangeException : public std::runtime_error {
         using std::runtime_error::runtime_error;
     };
