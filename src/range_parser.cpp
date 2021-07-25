@@ -1,7 +1,6 @@
 #include "range_parser/range_parser.hpp"
 
 #include <sstream>
-#include <iostream>
 
 namespace range_parser {
 
@@ -15,7 +14,7 @@ namespace range_parser {
         std::istringstream iss(pValue);
         iss >> value;
 
-        if (iss.fail()) {
+        if (iss.fail() || !iss.eof()) {
             throw RangeException("Invalid range: unable to parse range limit");
         }
 
