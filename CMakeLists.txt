@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 project(range_parser
+        VERSION 1.0.0
         DESCRIPTION "C++ small library for parsing HTTP range headers"
         HOMEPAGE_URL "https://github.com/i96751414/range-parser-cpp")
 
@@ -20,6 +21,11 @@ set(sources src/range_parser.cpp)
 set(headers include/range_parser/range_parser.hpp)
 
 add_library(range_parser ${sources} ${headers})
+
+string(REGEX MATCH "[0-9]+\\.[0-9]+" SOVERSION ${PROJECT_VERSION})
+set_target_properties(range_parser PROPERTIES
+        VERSION ${PROJECT_VERSION}
+        SOVERSION ${SOVERSION})
 
 target_include_directories(range_parser PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
