@@ -6,6 +6,9 @@ on:
   pull_request:
     branches:
       - '*'
+  create:
+    tags:
+      - v*
 jobs:
   build:
     name: Build
@@ -26,3 +29,18 @@ jobs:
         with:
           name: range-parser-linux-x64-debug
           path: cmake-build/librange_parser.a
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    needs: build
+    if: success() && github.event_name == 'create' && startsWith(github.ref, 'refs/tags/')
+    steps:
+      - name: Perform release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          draft: false
+          prerelease: false
