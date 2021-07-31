@@ -14,4 +14,5 @@ auto range = range_parser::parse("bytes=0-29", 100);
 std::cout << "unit: " << range.unit << std::endl;
 std::cout << "start: " << range.ranges.at(0).start << std::endl;
 std::cout << "length: " << range.ranges.at(0).length << std::endl;
+std::cout << "total length: " << range.total_length() << std::endl;
 ```

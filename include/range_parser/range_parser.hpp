@@ -25,6 +25,8 @@ namespace range_parser {
     struct HTTPRange {
         std::string unit;
         std::vector<Range> ranges;
+
+        std::int64_t total_length();
     };
 
     HTTPRange parse(const std::string &pRange, std::int64_t pSize);

@@ -69,4 +69,12 @@ namespace range_parser {
         return std::move(httpRange);
     }
 
+    std::int64_t HTTPRange::total_length() {
+        std::int64_t length(0);
+        for (auto &r : ranges) {
+            length += r.length;
+        }
+        return length;
+    }
+
 }

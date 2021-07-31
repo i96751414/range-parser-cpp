@@ -20,6 +20,7 @@ TEST_P(IgnoredRangeTest, Should_IgnoreRange_When_RangeIsEmpty_Or_StartGreaterOrE
     auto range = range_parser::parse(GetParam(), 10);
     EXPECT_EQ(range.unit, "bytes");
     EXPECT_TRUE(range.ranges.empty());
+    EXPECT_EQ(range.total_length(), 0);
 }
 
 INSTANTIATE_TEST_SUITE_P(EmptyRanges, IgnoredRangeTest, testing::Values(
@@ -36,6 +37,7 @@ TEST_P(SingularRangeTest, Should_ParseRange_When_ValidRangeProvided) {
     EXPECT_EQ(range.ranges.size(), 1);
     EXPECT_EQ(range.ranges.at(0).start, std::get<2>(GetParam()));
     EXPECT_EQ(range.ranges.at(0).length, std::get<3>(GetParam()));
+    EXPECT_EQ(range.total_length(), std::get<3>(GetParam()));
 }
 
 INSTANTIATE_TEST_SUITE_P(ValidRanges, SingularRangeTest, testing::Values(
@@ -62,4 +64,5 @@ TEST(MultipleRangeTest, Should_ParseRanges_When_TwoValidRangesProvided) {
     EXPECT_EQ(range.ranges.at(0).length, 50);
     EXPECT_EQ(range.ranges.at(1).start, 60);
     EXPECT_EQ(range.ranges.at(1).length, 40);
+    EXPECT_EQ(range.total_length(), 90);
 }
