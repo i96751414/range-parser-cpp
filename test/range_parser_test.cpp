@@ -11,7 +11,7 @@ TEST_P(InvalidRangeTest, Should_Throw_When_InvalidRangeProvided) {
 
 INSTANTIATE_TEST_SUITE_P(InvalidRanges, InvalidRangeTest, testing::Values(
         "", "bytes=0", "bytes=,", "bytes=--1", "bytes=-a", "bytes=a-", "bytes=10,9", "bytes=-1-2", "bytes=1--2",
-        "bytes=1.1-2", "bytes=1-2.1", "bytes=(1)-2"));
+        "bytes=1.1-2", "bytes=1-2.1", "bytes=(1)-2", "bytes=2-1"));
 
 class IgnoredRangeTest : public testing::TestWithParam<const char *> {
 };
@@ -50,6 +50,7 @@ INSTANTIATE_TEST_SUITE_P(ValidRanges, SingularRangeTest, testing::Values(
         SingularRangeParams("bytes=40-", 100, 40, 60),
         SingularRangeParams("bytes=99-", 100, 99, 1),
         // Simple ranges
+        SingularRangeParams("bytes=0-0", 200, 0, 1),
         SingularRangeParams("bytes=0-59", 200, 0, 60),
         SingularRangeParams("bytes=60-119", 200, 60, 60),
         SingularRangeParams("bytes=120-199", 200, 120, 80),
