@@ -21,6 +21,12 @@ namespace range_parser {
         return value;
     }
 
+    std::string Range::content_range(std::int64_t pSize, const char *pUnit) const {
+        std::ostringstream os;
+        os << pUnit << ' ' << start << '-' << start + length - 1 << '/' << pSize;
+        return os.str();
+    }
+
     HTTPRange parse(const std::string &pRange, std::int64_t pSize) {
         auto unitIndex = pRange.find('=');
         if (unitIndex == std::string::npos) {

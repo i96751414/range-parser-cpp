@@ -20,6 +20,8 @@ namespace range_parser {
 
         Range(std::int64_t pStart, std::int64_t pLength)
                 : start(pStart), length(pLength) {}
+
+        std::string content_range(std::int64_t pSize, const char *pUnit = UNIT_BYTES) const;
     };
 
     struct HTTPRange {

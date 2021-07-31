@@ -26,36 +26,39 @@ TEST_P(IgnoredRangeTest, Should_IgnoreRange_When_RangeIsEmpty_Or_StartGreaterOrE
 INSTANTIATE_TEST_SUITE_P(EmptyRanges, IgnoredRangeTest, testing::Values(
         "bytes=", "bytes=10-", "bytes=11-", "bytes=10-11", "bytes=11-12"));
 
-typedef std::tuple<std::string, std::int64_t, std::int64_t, std::int64_t> SingularRangeParams;
+typedef std::tuple<std::string, std::int64_t, std::int64_t, std::int64_t, std::string> SingularRangeParams;
 
 class SingularRangeTest : public testing::TestWithParam<SingularRangeParams> {
 };
 
 TEST_P(SingularRangeTest, Should_ParseRange_When_ValidRangeProvided) {
-    auto range = range_parser::parse(std::get<0>(GetParam()), std::get<1>(GetParam()));
+    auto size = std::get<1>(GetParam());
+    auto expectedLength = std::get<3>(GetParam());
+    auto range = range_parser::parse(std::get<0>(GetParam()), size);
     EXPECT_EQ(range.unit, "bytes");
     EXPECT_EQ(range.ranges.size(), 1);
     EXPECT_EQ(range.ranges.at(0).start, std::get<2>(GetParam()));
-    EXPECT_EQ(range.ranges.at(0).length, std::get<3>(GetParam()));
-    EXPECT_EQ(range.total_length(), std::get<3>(GetParam()));
+    EXPECT_EQ(range.ranges.at(0).length, expectedLength);
+    EXPECT_EQ(range.ranges.at(0).content_range(size), std::get<4>(GetParam()));
+    EXPECT_EQ(range.total_length(), expectedLength);
 }
 
 INSTANTIATE_TEST_SUITE_P(ValidRanges, SingularRangeTest, testing::Values(
-        // range, size, r.start, r.length
+        // range, size, r.start, r.length, r.content_range
         // Suffix length ranges
-        SingularRangeParams("bytes=-40", 100, 60, 40),
-        SingularRangeParams("bytes=-200", 100, 0, 100),
+        SingularRangeParams("bytes=-40", 100, 60, 40, "bytes 60-99/100"),
+        SingularRangeParams("bytes=-200", 100, 0, 100, "bytes 0-99/100"),
         // End omitted ranges
-        SingularRangeParams("bytes=0-", 100, 0, 100),
-        SingularRangeParams("bytes=40-", 100, 40, 60),
-        SingularRangeParams("bytes=99-", 100, 99, 1),
+        SingularRangeParams("bytes=0-", 100, 0, 100, "bytes 0-99/100"),
+        SingularRangeParams("bytes=40-", 100, 40, 60, "bytes 40-99/100"),
+        SingularRangeParams("bytes=99-", 100, 99, 1, "bytes 99-99/100"),
         // Simple ranges
-        SingularRangeParams("bytes=0-0", 200, 0, 1),
-        SingularRangeParams("bytes=0-59", 200, 0, 60),
-        SingularRangeParams("bytes=60-119", 200, 60, 60),
-        SingularRangeParams("bytes=120-199", 200, 120, 80),
-        SingularRangeParams("bytes=120-200", 200, 120, 80),
-        SingularRangeParams("bytes=120-210", 200, 120, 80)));
+        SingularRangeParams("bytes=0-0", 200, 0, 1, "bytes 0-0/200"),
+        SingularRangeParams("bytes=0-59", 200, 0, 60, "bytes 0-59/200"),
+        SingularRangeParams("bytes=60-119", 200, 60, 60, "bytes 60-119/200"),
+        SingularRangeParams("bytes=120-199", 200, 120, 80, "bytes 120-199/200"),
+        SingularRangeParams("bytes=120-200", 200, 120, 80, "bytes 120-199/200"),
+        SingularRangeParams("bytes=120-210", 200, 120, 80, "bytes 120-199/200")));
 
 TEST(MultipleRangeTest, Should_ParseRanges_When_TwoValidRangesProvided) {
     auto range = range_parser::parse("bytes=0-49,60-", 100);
