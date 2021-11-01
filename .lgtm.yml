@@ -1,0 +1,22 @@
+path_classifiers:
+  test:
+    - "test/*_test.cpp"
+extraction:
+  cpp:
+    prepare:
+      packages:
+        - wget
+        - make
+        - build-essential
+    after_prepare:
+      - |
+        CMAKE_VERSION=3.20.3
+        wget "https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-linux-x86_64.tar.gz" \
+          --no-check-certificate -qO- | tar --strip-components=1 -xz --one-top-level="${LGTM_WORKSPACE}/cmake"
+        export PATH="${LGTM_WORKSPACE}/cmake/bin:${PATH}"
+    configure:
+      command:
+        - cmake -DCMAKE_BUILD_TYPE=Debug -Dbuild_tests=ON .
+    index:
+      build_command:
+        - cmake --build .
